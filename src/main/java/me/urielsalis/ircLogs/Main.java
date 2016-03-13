@@ -3,7 +3,10 @@ package me.urielsalis.ircLogs;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -20,6 +23,10 @@ public class Main {
     private ArrayList<File> filenames = new ArrayList<File>();
     private HashMap<String, File> userAllFolders = new HashMap<String, File>();
     private HashMap<String, File> userNetworkChannel = new HashMap<String, File>();
+
+    private SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+    private SimpleDateFormat output = new SimpleDateFormat("dd/MM/yyyy");
+
 
     public static void main(String[] args) {
         main = new Main();
@@ -79,12 +86,22 @@ public class Main {
                 userNetworkChannel.put(user+network+channel, temp3);
             }
             try {
-                Files.copy(file.toPath(), new File(userNetworkChannel.get(user), day + ".log").toPath());
+                Files.copy(file.toPath(), new File(userNetworkChannel.get(user+network+channel), parse(day) + ".log").toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
+    }
+
+    private String parse(String day) {
+        try {
+            Date date = format.parse(day);
+            return output.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
